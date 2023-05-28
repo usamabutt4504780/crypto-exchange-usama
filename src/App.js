@@ -1,24 +1,44 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { Routes, Route, useNavigate } from "react-router-dom";
 import './App.css';
+import Login from './components/login';
+import MyHeader from './common/header';
+import Signup from './components/signup';
+import NoPage from './components/nopage';
+import Dashboard from './components/dashboard';
+import AppFooter from './common/footer';
 
 function App() {
+  const [users, setUsers] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    navigate('/dashboard');
+  };
+
+  const addUser = (user) => {
+    setUsers([...users, user]);
+    navigate('/');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate('/');
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <MyHeader isLoggedIn={isLoggedIn} logout={handleLogout} />
+      <Routes>
+        <Route path="/" element={<Login users={users} login={handleLogin} />} />
+        <Route path="/register" element={<Signup addUser={addUser} />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="*" element={<NoPage />} />
+      </Routes>
+      <AppFooter />
+
+    </>
   );
 }
 
